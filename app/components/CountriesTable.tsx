@@ -53,7 +53,10 @@ export default function CountriesTable({
                     onClick={() => onToggleSort("continent")}
                     className="text-[10px] md:text-xs px-1.5 py-0.5 bg-white border border-gray-300 rounded hover:bg-gray-100"
                   >
-                    Sort {sortKey === "continent" ? (sortAsc ? "▲" : "▼") : ""}
+                    <span className="hidden md:inline">Sort</span>
+                    <span className="inline md:ml-1">
+                      {sortKey === "continent" ? (sortAsc ? "▲" : "▼") : "↕"}
+                    </span>
                   </button>
                 </div>
               </th>
