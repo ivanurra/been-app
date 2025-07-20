@@ -82,11 +82,13 @@ export default function CountriesTable({
               >
                 <td className="px-2 md:px-4 py-2 md:py-4 font-medium flex items-center gap-1.5 md:gap-3">
                   {visit.isoCode && (
-                    <img
-                      src={`https://flagcdn.com/h20/${visit.isoCode.toLowerCase()}.png`}
-                      alt={`Flag of ${visit.country}`}
-                      className="w-auto h-4 md:h-5 rounded-sm shadow-sm"
-                    />
+                    <div className="w-5 h-3 flex items-center justify-center overflow-hidden rounded-sm shadow-sm">
+                      <img
+                        src={`https://flagcdn.com/h20/${visit.isoCode.toLowerCase()}.png`}
+                        alt={`Flag of ${visit.country}`}
+                        className="w-auto h-full object-contain"
+                      />
+                    </div>
                   )}
                   <span className="truncate">{visit.country}</span>
                 </td>
