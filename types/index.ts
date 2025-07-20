@@ -3,6 +3,7 @@ export type CountryVisit = {
   continent: string;
   year: number;
   order: number;
+  isoCode?: string;
 };
 
 export type SortKey = "country" | "continent" | "year" | "order";

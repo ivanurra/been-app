@@ -25,14 +25,15 @@ export default function Home() {
 
       <div className="flex flex-col sm:flex-row gap-4 mb-8">
         <StatsCard
-          title="Países"
+          title="Countries"
           value={`${data.length} / ${TOTAL_COUNTRIES}`}
           icon={<span>🌎</span>}
+          subtext="Visited"
         />
         <StatsCard
-          title="En Total"
+          title="World Coverage"
           value={`${percentageVisited}%`}
-          subtext={` / ${data.length}`}
+          subtext={`${data.length} of ${TOTAL_COUNTRIES} countries`}
         />
       </div>
 
