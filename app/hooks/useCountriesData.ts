@@ -5,6 +5,7 @@ export default function useCountriesData() {
   const [data, setData] = useState<CountryVisit[]>([]);
   const [filteredData, setFilteredData] = useState<CountryVisit[]>([]);
   const [continentFilter, setContinentFilter] = useState("");
+
   const [sortKey, setSortKey] = useState<SortKey>("order");
   const [sortAsc, setSortAsc] = useState(false);
 
@@ -17,18 +18,25 @@ export default function useCountriesData() {
   useEffect(() => {
     let result = [...data];
 
+    // Filtrado por continente
     if (continentFilter) {
       result = result.filter(
         (d) => d.continent.toLowerCase() === continentFilter.toLowerCase()
       );
     }
 
+    // Ordenamiento
     result.sort((a, b) => {
       const aVal = a[sortKey];
       const bVal = b[sortKey];
-      if (aVal < bVal) return sortAsc ? -1 : 1;
-      if (aVal > bVal) return sortAsc ? 1 : -1;
-      return 0;
+
+      if (typeof aVal === "string" && typeof bVal === "string") {
+        return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+      }
+
+      return sortAsc
+        ? (aVal as number) - (bVal as number)
+        : (bVal as number) - (aVal as number);
     });
 
     setFilteredData(result);
@@ -45,11 +53,12 @@ export default function useCountriesData() {
         setSortAsc(!sortAsc);
       } else {
         setSortKey(key);
-        setSortAsc(key === "order" ? false : true); // 👈 Default descendente sólo para "order"
+        setSortAsc(key === "order" ? false : true);
       }
     },
     clearFilter: () => setContinentFilter(""),
-    filterByContinent: (continent: string) =>
-      setContinentFilter((prev) => (prev === continent ? "" : continent)),
+    filterByContinent: (continent: string) => {
+      setContinentFilter((prev) => (prev === continent ? "" : continent));
+    },
   };
 }

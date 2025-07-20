@@ -16,7 +16,7 @@ export default function Home() {
     filterByContinent,
   } = useCountriesData();
 
-  const TOTAL_COUNTRIES = 195;
+  const TOTAL_COUNTRIES = 100;
   const percentageVisited = Math.round((data.length / TOTAL_COUNTRIES) * 100);
 
   return (
@@ -25,13 +25,13 @@ export default function Home() {
 
       <div className="flex flex-col sm:flex-row gap-4 mb-8">
         <StatsCard
-          title="Countries"
+          title="Country Goal"
           value={`${data.length} / ${TOTAL_COUNTRIES}`}
           icon={<span>🌎</span>}
           subtext="Visited"
         />
         <StatsCard
-          title="World Coverage"
+          title="Progress"
           value={`${percentageVisited}%`}
           subtext={`${data.length} of ${TOTAL_COUNTRIES} countries`}
         />
