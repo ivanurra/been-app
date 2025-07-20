@@ -95,7 +95,7 @@ export default function CountriesTable({
                 <td className="px-2 md:px-4 py-2 md:py-4">
                   <button
                     onClick={() => onContinentClick(visit.continent)}
-                    className="underline hover:text-blue-600 whitespace-nowrap"
+                    className="underline hover:text-blue-600 whitespace-nowrap cursor-pointer"
                   >
                     {visit.continent}
                   </button>

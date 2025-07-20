@@ -6,7 +6,7 @@ export default function useCountriesData() {
   const [filteredData, setFilteredData] = useState<CountryVisit[]>([]);
   const [continentFilter, setContinentFilter] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("order");
-  const [sortAsc, setSortAsc] = useState(true);
+  const [sortAsc, setSortAsc] = useState(false);
 
   useEffect(() => {
     fetch("/countries_with_iso.json")
@@ -41,10 +41,11 @@ export default function useCountriesData() {
     sortAsc,
     continentFilter,
     toggleSort: (key: SortKey) => {
-      if (key === sortKey) setSortAsc(!sortAsc);
-      else {
+      if (key === sortKey) {
+        setSortAsc(!sortAsc);
+      } else {
         setSortKey(key);
-        setSortAsc(true);
+        setSortAsc(key === "order" ? false : true); // 👈 Default descendente sólo para "order"
       }
     },
     clearFilter: () => setContinentFilter(""),
