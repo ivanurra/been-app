@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import useCountriesData from "./hooks/useCountriesData";
 import StatsCard from "./components/StatsCard";
 import CountriesTable from "./components/CountriesTable";
@@ -21,7 +23,19 @@ export default function Home() {
 
   return (
     <main className="w-full px-8 py-10">
-      {/* <h1 className="text-3xl font-bold mb-6">Been App</h1> */}
+      <div className="mb-6 flex justify-center sm:justify-start">
+        <Link href="/">
+          <div className="mx-auto sm:mx-0 w-32 h-auto">
+            <Image
+              src="/logo.png"
+              alt="Been App Logo"
+              width={130}
+              height={130}
+              className="object-contain"
+            />
+          </div>
+        </Link>
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-8">
         <StatsCard
