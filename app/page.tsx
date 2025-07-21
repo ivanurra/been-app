@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
     <main className="w-full px-8 py-10">
-      <h1 className="text-3xl font-bold mb-6">Been-App</h1>
+      {/* <h1 className="text-3xl font-bold mb-6">Been App</h1> */}
 
       <div className="flex flex-col sm:flex-row gap-4 mb-8">
         <StatsCard
