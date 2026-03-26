@@ -1,111 +1,121 @@
 "use client";
 
 import { CountryVisit, SortKey } from "../../types";
+import { getContinentStyle } from "../lib/continents";
 
 type Props = {
-  data: CountryVisit[];
   filteredData: CountryVisit[];
   sortKey: SortKey;
   sortAsc: boolean;
-  continentFilter: string;
-  onClearFilter: () => void;
   onToggleSort: (key: SortKey) => void;
-  onContinentClick: (continent: string) => void;
 };
 
+const COLUMNS: { key: SortKey; label: string; width: string }[] = [
+  { key: "country", label: "Country", width: "w-[38%]" },
+  { key: "continent", label: "Continent", width: "w-[28%]" },
+  { key: "year", label: "Year", width: "w-[17%]" },
+  { key: "order", label: "#", width: "w-[17%]" },
+];
+
+function SortIcon({
+  columnKey,
+  sortKey,
+  sortAsc,
+}: {
+  columnKey: SortKey;
+  sortKey: SortKey;
+  sortAsc: boolean;
+}) {
+  if (sortKey !== columnKey) {
+    return (
+      <svg className="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="w-3.5 h-3.5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      {sortAsc ? (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+      ) : (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+      )}
+    </svg>
+  );
+}
+
 export default function CountriesTable({
-  data,
   filteredData,
   sortKey,
   sortAsc,
-  continentFilter,
-  onClearFilter,
   onToggleSort,
-  onContinentClick,
 }: Props) {
   return (
-    <div className="w-full">
-      <div className="text-sm md:text-lg mb-4 md:mb-6 text-gray-600">
-        {continentFilter && (
-          <button
-            onClick={onClearFilter}
-            className="underline hover:text-blue-600"
-          >
-            Remove continent filter: {continentFilter}
-          </button>
-        )}
-      </div>
-
-      <div className="w-full rounded-lg shadow overflow-x-auto">
-        <table className="w-full table-fixed border-separate border-spacing-0 text-xs md:text-base">
-          <thead className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700">
-            <tr>
-              <th
-                className="w-[30%] px-2 md:px-4 py-3 md:py-4 text-left cursor-pointer border-b border-gray-300"
-                onClick={() => onToggleSort("country")}
-              >
-                Country {sortKey === "country" ? (sortAsc ? "▲" : "▼") : ""}
-              </th>
-              <th className="w-[28%] px-2 md:px-4 py-3 md:py-4 text-left border-b border-gray-300">
-                <div className="flex items-center gap-1 md:gap-2 whitespace-nowrap">
-                  <span>Continent</span>
-                  <button
-                    onClick={() => onToggleSort("continent")}
-                    className="text-[10px] md:text-xs px-1.5 py-0.5 bg-white border border-gray-300 rounded hover:bg-gray-100"
-                  >
-                    <span className="hidden md:inline">Sort</span>
-                    <span className="inline md:ml-1">
-                      {sortKey === "continent" ? (sortAsc ? "▲" : "▼") : "↕"}
-                    </span>
-                  </button>
-                </div>
-              </th>
-              <th
-                className="w-[22%] px-2 md:px-4 py-3 md:py-4 text-left cursor-pointer border-b border-gray-300"
-                onClick={() => onToggleSort("year")}
-              >
-                Year {sortKey === "year" ? (sortAsc ? "▲" : "▼") : ""}
-              </th>
-              <th
-                className="w-[20%] px-2 md:px-3 py-3 md:py-4 text-left cursor-pointer border-b border-gray-300"
-                onClick={() => onToggleSort("order")}
-              >
-                Order {sortKey === "order" ? (sortAsc ? "▲" : "▼") : ""}
-              </th>
+    <div className="w-full rounded-2xl overflow-hidden bg-white dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/50 shadow-sm">
+      <div className="overflow-x-auto">
+        <table className="w-full table-fixed text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 dark:border-slate-700">
+              {COLUMNS.map((col) => (
+                <th
+                  key={col.key}
+                  className={`${col.width} px-4 md:px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 cursor-pointer hover:text-slate-700 dark:hover:text-slate-200 transition-colors select-none`}
+                  onClick={() => onToggleSort(col.key)}
+                >
+                  <div className="flex items-center gap-1.5">
+                    {col.label}
+                    <SortIcon columnKey={col.key} sortKey={sortKey} sortAsc={sortAsc} />
+                  </div>
+                </th>
+              ))}
             </tr>
           </thead>
-          <tbody>
-            {filteredData.map((visit, idx) => (
-              <tr
-                key={idx}
-                className="hover:bg-gray-50 transition-colors border-b border-gray-200 text-gray-800"
-              >
-                <td className="px-2 md:px-4 py-2 md:py-4 font-medium flex items-center gap-1.5 md:gap-3">
-                  {visit.isoCode && (
-                    <div className="w-5 h-3 flex items-center justify-center overflow-hidden shadow-sm bg-white">
-                      <img
-                        src={`https://flagcdn.com/h20/${visit.isoCode.toLowerCase()}.png`}
-                        alt={`Flag of ${visit.country}`}
-                        className="w-full h-full object-cover"
-                      />
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
+            {filteredData.map((visit) => {
+              const continentStyle = getContinentStyle(visit.continent);
+
+              return (
+                <tr
+                  key={visit.order}
+                  className="hover:bg-slate-50/80 dark:hover:bg-slate-700/30 transition-colors"
+                >
+                  <td className="px-4 md:px-5 py-3 md:py-4">
+                    <div className="flex items-center gap-3">
+                      {visit.isoCode && (
+                        <div className="w-8 h-6 flex-shrink-0 rounded-sm overflow-hidden shadow-sm ring-1 ring-black/5">
+                          <img
+                            src={`https://flagcdn.com/h40/${visit.isoCode.toLowerCase()}.png`}
+                            alt={`Flag of ${visit.country}`}
+                            width={32}
+                            height={24}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                      <span className="font-medium text-slate-900 dark:text-slate-100 truncate">
+                        {visit.country}
+                      </span>
                     </div>
-                  )}
-                  <span className="truncate">{visit.country}</span>
-                </td>
-                <td className="px-2 md:px-4 py-2 md:py-4">
-                  <button
-                    onClick={() => onContinentClick(visit.continent)}
-                    className="underline hover:text-blue-600 whitespace-nowrap cursor-pointer"
-                  >
-                    {visit.continent}
-                  </button>
-                </td>
-                <td className="px-2 md:px-4 py-2 md:py-4 whitespace-nowrap">
-                  {visit.year}
-                </td>
-                <td className="px-2 md:px-3 py-2 md:py-4">{visit.order}</td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="px-4 md:px-5 py-3 md:py-4">
+                    <span
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${continentStyle.bg} ${continentStyle.color}`}
+                    >
+                      {visit.continent}
+                    </span>
+                  </td>
+                  <td className="px-4 md:px-5 py-3 md:py-4 text-slate-600 dark:text-slate-300 tabular-nums">
+                    {visit.year || "—"}
+                  </td>
+                  <td className="px-4 md:px-5 py-3 md:py-4">
+                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 tabular-nums">
+                      {visit.order}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ThemeProvider from "./components/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,9 +14,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Been App",
-  description: "Been App",
+  title: "Been — Track Your Travels",
+  description:
+    "Track every country you've visited and visualize your journey around the world.",
 };
+
+// Inline script to apply theme before React hydrates (prevents FOUC)
+const themeScript = `
+(function(){
+  try {
+    var d = localStorage.getItem('been-theme') === 'dark';
+    if (d) document.documentElement.classList.add('dark');
+    document.documentElement.style.colorScheme = d ? 'dark' : 'light';
+  } catch(e) {}
+})();
+`;
 
 export default function RootLayout({
   children,
@@ -23,11 +36,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased min-h-screen bg-background text-foreground`}
       >
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
